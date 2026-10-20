@@ -300,6 +300,100 @@ textarea.txt{min-height:84px;resize:vertical;font-family:ui-monospace,Consolas,m
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--forest);color:#F5F2EA;padding:10px 18px;border-radius:12px;box-shadow:var(--shadow);font-size:13px;max-width:min(560px,calc(100vw - 32px));z-index:20;border-left:4px solid var(--gold)}
 .toast.err{border-left-color:#EC8892;background:#4A1F27}
 @media (max-width:720px){.band h1{display:none}.tot{grid-template-columns:1fr}.tot>div{border-right:0;border-bottom:1px solid var(--line)}}
+
+
+/* --- Refinamiento visual ejecutivo: edición elegante y de bajo ruido --- */
+:root{
+  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#F7F9F7; --head:#F0F4F1; --grp:#EAF1EC; --sel:#F4F7E9;
+  --ink:#172D27; --ink-2:#61716A; --faint:#98A49E; --line:#E1E8E3;
+  --header-bg:#173D32; --header-ink:#F7FAF7; --forest:#173D32;
+  --gold:#C5A45B; --gold-soft:#F7F1E2; --gold-ink:#806525;
+  --rose:#B96D7D; --rose-soft:#F8EEF0; --rose-ink:#8E4656; --rev-bg:#FCF7F8; --rev-head:#F4E5E8;
+  --ok:#287451; --ok-soft:#E7F3EB; --warn-ink:#8A681E; --warn-soft:#FBF3DE;
+  --def:#B34E5A; --def-soft:#F9E9EB; --exc:#386E9C; --exc-soft:#EAF2F9;
+  --shadow:0 2px 5px rgba(24,54,43,.025),0 10px 28px rgba(24,54,43,.045);
+  --line-2:#D0DCD4; --wtint:#F7F9F7; --wtint-h:#EDF3EF; --gold-h:#F7F0DD;
+}
+body{font-size:13px;line-height:1.45;letter-spacing:.005em}
+.band{box-shadow:0 2px 12px rgba(18,49,39,.12)}
+.band-in{max-width:1600px;padding-block:15px}
+.mark{border-radius:11px;background:rgba(255,255,255,.08);width:38px;height:38px}
+.brand b{letter-spacing:.16em;font-size:12px}
+.band h1{font-size:19px;font-weight:550;letter-spacing:-.025em}
+.wrap{max-width:1600px;gap:16px;padding-top:20px}
+.panel,.kpi,.lgcard{border-color:#E2E9E4;border-radius:16px;box-shadow:var(--shadow)}
+.kpi{padding:16px 18px}
+.kpi .l{font-size:10px;letter-spacing:.11em}
+.kpi .val{font-size:28px;letter-spacing:-.035em;font-weight:650}
+.ph{padding:14px 18px}
+.ph h3{font-size:14px;letter-spacing:-.01em}
+.titlebar h2{font-size:25px;letter-spacing:-.035em}
+.btn,select,.txt{border-color:#DCE5DE;border-radius:10px;transition:background .15s,border-color .15s,transform .15s}
+.btn{padding:8px 14px;background:#fff}
+.btn:hover{border-color:#A8BDB0;background:#F8FBF8}
+.btn.primary{border-radius:10px;box-shadow:0 3px 8px rgba(23,61,50,.13)}
+.tabs button{padding:12px 17px;font-size:13px}
+.tabs button[aria-selected="true"]{border-bottom-color:var(--forest);color:var(--forest)}
+#chart{height:250px;padding:5px 18px 15px}
+#chart .wk-label{font-size:11px}
+.tcard{height:clamp(500px,calc(100vh - 10px),900px);border-radius:16px}
+.prog{padding:12px 18px;background:#F8FAF8;border-block-color:#E6ECE7}
+.pb{height:6px;background:#E4EAE5}
+.pb b{background:linear-gradient(90deg,#BFA05A,#D7BF7D)}
+.addrow{background:#FBF8F0;padding:12px 18px}
+.scroller{scrollbar-color:#C5D1C9 transparent;scrollbar-width:thin}
+.scroller::-webkit-scrollbar{width:10px;height:10px}
+.scroller::-webkit-scrollbar-thumb{background:#CAD5CE;border:3px solid #fff;border-radius:99px}
+table{min-width:max-content}
+th,td{height:50px;padding:0 10px;border-bottom-color:#E8EDE9}
+thead th{font-size:11.5px;font-weight:650}
+thead tr.band th{height:34px;background:#21483D;letter-spacing:.105em;font-size:10px}
+thead tr.band th.bc{background:#A85E70;border-left:3px solid #C98593}
+thead tr.band th.bb{background:#8B733B}
+thead tr.wk th{height:42px;background:#F4F7F4}
+thead tr.wk th b{font-size:14px;font-weight:700;letter-spacing:-.02em}
+thead tr.wk th small{font-size:10px;color:#7A8981}
+thead tr.sub th{height:32px;background:#FAFBFA;border-bottom-width:2px;font-size:10.5px}
+thead tr.sub th::before{width:6px;height:6px}
+thead th.v{background:#F0F4F1}
+thead tr.band th.v{background:#F0F4F1;color:var(--ink);font-size:12px}
+thead th.revh{background:#F4E5E8;color:#874657;border-left:3px solid #C98593}
+thead th.budh{background:#F7F1E2;color:#806525}
+.v{width:190px;min-width:190px;max-width:190px;padding-left:16px;font-weight:620}
+tr.row th.v{font-size:13px}
+tr.row td.blockcell{background:#F7F9F7;color:#4E665B;border-right:1px solid #E4EBE6;font-size:11px;letter-spacing:.03em}
+thead th.blockh{background:#F0F4F1}
+tbody tr.row:hover td,tbody tr.row:hover th.v{background:#F4F8F5}
+tbody tr.row.sel th.v{background:#F4F7E9;box-shadow:inset 3px 0 0 #C5A45B,1px 0 0 var(--line)}
+tbody tr.row.sel td:not(.cmp){background:#F8F9F1}
+tbody tr.row.sel td.rev{background:#FBF2F4}
+td.n{font-size:13px;font-weight:600}
+td.bud{font-size:13px;background:color-mix(in srgb,var(--gold-soft) 40%,var(--surface))}
+td.spk{width:138px;min-width:138px}
+td.rev{min-width:340px;background:#FCF7F8;border-left:3px solid #C98593}
+.revc{gap:10px}
+.st{width:21px;height:21px}
+.chip{min-width:94px;border-radius:7px;font-size:11px;padding:5px 8px}
+.inp{width:108px;height:36px;border-radius:9px;border-color:#C9D8CE;background:#fff;font-size:13px;transition:border-color .15s,box-shadow .15s}
+.inp:focus{outline:none;border-color:#53866D;box-shadow:0 0 0 3px rgba(83,134,109,.13)}
+.inp[data-s="empty"]{border-color:#D0B56E;border-style:dashed}
+.more{border:1px solid #E1E8E3;background:#fff;border-radius:9px;width:34px;height:34px;color:#52675C}
+.more:hover{background:#F0F5F1;border-color:#C3D3C8}
+tr.grp th,tr.grp td{background:#EAF1EC!important;border-bottom-color:#D9E5DC;height:42px}
+tr.grp th.v{color:#294C3E;font-size:12px;letter-spacing:.01em}
+tr.grp .gs{gap:12px}
+.pill{font-size:10px;letter-spacing:.01em;padding:4px 10px}
+.detail td{background:#F8FAF8}
+.dtl{border:1px solid #E2EAE4;border-radius:12px;background:#fff;padding:14px}
+.toast{border-radius:12px;box-shadow:0 8px 28px rgba(20,45,35,.2)}
+@media(max-width:900px){
+ .band-in{gap:10px}.band h1{font-size:16px}.wrap{padding-top:12px}
+ #chart{height:220px;padding-inline:8px}
+ th,td{padding-inline:8px}.v{min-width:155px;width:155px;max-width:155px}
+ td.rev{min-width:310px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
 </style>
 </head><body>
 <div class="band"><div class="band-in">
