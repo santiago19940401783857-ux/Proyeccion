@@ -14,6 +14,7 @@
   --ok:#2F7D55; --ok-soft:#DCEEE2; --warn-ink:#8A6414; --warn-soft:#F8EBC8;
   --def:#B23A48; --def-soft:#F6DDE0; --exc:#2A6BA8; --exc-soft:#DAE8F6;
   --shadow:0 1px 2px rgba(24,61,52,.08),0 6px 18px rgba(24,61,52,.06);
+  --line-2:#BDB7A4; --wtint:#F3F0E6; --wtint-h:#E6E2D3; --gold-h:#F0E3B4;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0E1815; --surface:#15231F; --surface-2:#1A2B26; --head:#1B2D27; --grp:#1D3029; --sel:#2B2A17;
@@ -23,7 +24,8 @@
   --rose:#D98497; --rose-soft:#3A2229; --rose-ink:#F0A5B5; --rev-bg:#241C20; --rev-head:#3B252C;
   --ok:#6CC393; --ok-soft:#1B3A2B; --warn-ink:#E7C46A; --warn-soft:#3D3317;
   --def:#EC8892; --def-soft:#3D2226; --exc:#86B9EA; --exc-soft:#1B2E42;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25); color-scheme:dark}}
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;
+  --line-2:#47605A; --wtint:#192A25; --wtint-h:#23382F; --gold-h:#3A3418}}
 :root[data-theme="dark"]{
   --bg:#0E1815; --surface:#15231F; --surface-2:#1A2B26; --head:#1B2D27; --grp:#1D3029; --sel:#2B2A17;
   --ink:#E7EEE9; --ink-2:#9DB1A8; --faint:#6E857A; --line:#2B3F37;
@@ -32,7 +34,8 @@
   --rose:#D98497; --rose-soft:#3A2229; --rose-ink:#F0A5B5; --rev-bg:#241C20; --rev-head:#3B252C;
   --ok:#6CC393; --ok-soft:#1B3A2B; --warn-ink:#E7C46A; --warn-soft:#3D3317;
   --def:#EC8892; --def-soft:#3D2226; --exc:#86B9EA; --exc-soft:#1B2E42;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25); color-scheme:dark}
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;
+  --line-2:#47605A; --wtint:#192A25; --wtint-h:#23382F; --gold-h:#3A3418}
 
 [hidden]{display:none!important}
 *{box-sizing:border-box}
@@ -127,13 +130,36 @@ select,.txt{border:1px solid var(--line);background:var(--surface);border-radius
 .scroller{flex:1;min-height:0;overflow:auto;position:relative;background:var(--surface)}
 table{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content}
 th,td{padding:0 8px;height:48px;border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
-thead th{position:sticky;top:0;z-index:3;background:var(--head);height:32px;font-size:12px;font-weight:600;text-align:center;color:var(--ink)}
-thead tr.sub th{top:32px;height:26px;font-size:11px;font-weight:500;color:var(--ink-2)}
-thead th.rs{height:58px}
-thead th.v{z-index:5;text-align:left;padding-left:14px}
-thead th.revh{background:var(--rev-head);border-left:3px solid var(--rose)}
-thead th.budh{background:var(--ok-soft);color:var(--ok)}
-thead th .ex{font-weight:500;color:var(--ink-2);margin-left:6px;cursor:pointer;background:none;border:0;text-decoration:underline;font-size:11px}
+thead th{position:sticky;top:0;z-index:3;background:var(--head);font-size:12px;font-weight:600;text-align:center;color:var(--ink);padding:0 8px;border-bottom:1px solid var(--line-2)}
+thead tr.band th{top:0;height:28px;background:var(--header-bg);color:var(--header-ink);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;text-align:left;padding-left:12px;border-bottom:0}
+thead tr.band th small{font-weight:500;letter-spacing:.02em;text-transform:none;opacity:.75;margin-left:8px;font-size:11px}
+thead tr.band th.bh{border-left:2px solid var(--line-2)}
+thead tr.band th.bc{background:#7A2F43;color:#fff;border-left:3px solid var(--rose)}
+thead tr.band th.bb{background:#8A6B1C;color:#fff;border-left:2px solid var(--line-2)}
+thead tr.band .ex{float:right;color:var(--header-ink);border-color:rgba(255,255,255,.4)}
+thead tr.wk th{top:28px;height:38px;line-height:1.1}
+thead tr.wk th b{display:block;font-size:15px;letter-spacing:.01em}
+thead tr.wk th small{display:block;font-size:10px;font-weight:500;color:var(--ink-2);margin-top:1px}
+thead tr.wk th.w1{background:var(--wtint-h)}
+thead tr.wk th.last b::after{content:"última";margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-ink);background:var(--gold-soft);padding:1px 6px;border-radius:99px;vertical-align:2px}
+thead tr.sub th{top:66px;height:28px;font-size:11.5px;font-weight:700;background:var(--head);border-bottom-width:3px}
+thead tr.sub th.w1{background:var(--wtint-h)}
+thead tr.sub th.t-rev{color:var(--rose-ink);border-bottom-color:var(--rose)}
+thead tr.sub th.t-exp{color:var(--ok);border-bottom-color:var(--ok)}
+thead tr.sub th.t-cmp{color:var(--ink-2);border-bottom-color:var(--gold)}
+thead tr.sub th::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px;background:currentColor}
+thead tr.sub th.t-rev::before{background:transparent;border:1.5px solid var(--rose)}
+thead tr.sub th.t-cmp::before{border-radius:2px;width:9px;height:4px;background:var(--gold);vertical-align:2px}
+thead th.wst,tbody td.wst{border-left:2px solid var(--line-2)}
+thead th.rs{top:28px;height:104px;vertical-align:middle}
+thead tr.band th.v{background:var(--head);color:var(--ink);text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;padding-left:14px;border-bottom:1px solid var(--line-2)}
+thead th.v{z-index:5;text-align:left;padding-left:14px;top:0;font-size:13px;background:var(--head);border-left:0}
+thead th.v b{display:block;font-size:13px}
+thead th.v small{display:block;font-weight:500;font-size:11px;color:var(--ink-2);margin-top:2px}
+thead th.revh{background:var(--rev-head);border-left:3px solid var(--rose);color:var(--rose-ink);font-size:13px}
+thead th.revh small{display:block;font-weight:500;font-size:11px;color:var(--ink-2);margin-top:2px}
+thead th.budh{background:var(--gold-soft);color:var(--gold-ink);border-left:2px solid var(--line-2)}
+thead th .ex{font-weight:500;color:var(--ink-2);margin-left:6px;cursor:pointer;background:none;border:1px solid var(--line-2);border-radius:99px;padding:1px 9px;font-size:11px;text-transform:none;letter-spacing:0}
 .v{position:sticky;left:0;z-index:2;width:176px;min-width:176px;max-width:176px;text-align:left;padding-left:14px;font-weight:600;box-shadow:1px 0 0 var(--line);overflow:hidden;text-overflow:ellipsis}
 tbody tr.row:hover td,tbody tr.row:hover th.v{background:var(--surface-2)}
 tbody tr.row.sel th.v{background:var(--sel);box-shadow:inset 4px 0 0 var(--gold),1px 0 0 var(--line)}
@@ -142,8 +168,10 @@ tbody tr.row.sel td.rev{background:var(--rev-bg)}
 .pd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;vertical-align:middle;border:1.5px dashed var(--faint)}
 tr.pend .pd{border-color:var(--gold-ink);background:var(--gold)}
 tr:not(.pend) .pd{display:none}
-td.n{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
-td.n.dim{color:var(--ink-2)}
+td.n{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums;font-size:14px;font-weight:650}
+td.n.dim{color:var(--rose-ink);font-weight:400;opacity:.85}
+td.w1:not(.cmp){background:var(--wtint)}
+td.live.w1{background:var(--wtint)}
 .na{color:var(--faint);cursor:help}
 td.live{text-align:center;font-size:11px;color:var(--ink-2);font-style:italic;background:var(--surface-2)}
 td.cmp{position:relative;text-align:right;font-weight:600;font-size:12.5px;font-variant-numeric:tabular-nums;padding-right:10px}
@@ -154,7 +182,7 @@ td.cmp.mid{background:var(--warn-soft);color:var(--warn-ink)}
 td.cmp.def{background:var(--def-soft);color:var(--def)}
 td.cmp.exc{background:var(--exc-soft);color:var(--exc)}
 td.cmp.nd{background:var(--surface-2);color:var(--faint);font-weight:400}
-td.bud{text-align:right;color:var(--ok);font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--ok-soft) 45%,var(--surface))}
+td.bud{text-align:right;color:var(--gold-ink);font-weight:650;font-size:14px;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--gold-soft) 60%,var(--surface));border-left:2px solid var(--line-2)}
 td.spk{width:132px;min-width:132px;padding:0 6px}
 td.spk svg{display:block}
 .sl{stroke:var(--ok);fill:none;stroke-width:1.6}
@@ -648,32 +676,35 @@ function sparkSvg(r){
 
 /* ---------- tabla de captura ---------- */
 const NODATA='<span class="na" title="Sin dato; no equivale a cero.">—</span>';
-function weekCells(r,p,isLast){
-  const [rev,exp]=r.w[p.w];
-  let h=`<td class="n dim">${rev==null?NODATA:fmt(rev)}</td>`;
-  if(isLast&&exp==null&&rev!=null)return h+'<td class="live" colspan="2" title="La semana aún no tiene ejecutado cargado">en curso</td>';
-  h+=`<td class="n">${exp==null?NODATA:fmt(exp)}</td>`;
+function weekCells(r,p,isLast,gi){
+  const [rev,exp]=r.w[p.w];const g=gi%2?' w1':'';
+  let h=`<td class="n dim wst${g}">${rev==null?NODATA:fmt(rev)}</td>`;
+  if(isLast&&exp==null&&rev!=null)return h+`<td class="live${g}" colspan="2" title="La semana aún no tiene ejecutado cargado">en curso</td>`;
+  h+=`<td class="n${g}">${exp==null?NODATA:fmt(exp)}</td>`;
   if(rev&&exp!=null){
     const pc=exp/rev*100,d=pc-100,a=Math.abs(d);
     const c=a<=10?'ok':a<=25?'mid':d<0?'def':'exc',ar=a<=10?'':d<0?'▼ ':'▲ ';
-    h+=`<td class="cmp ${c}" title="Ejecutado ${fmt(exp)} de ${fmt(rev)} proyectado">${ar}${fp(pc)}<span class="bar"><b style="width:${Math.min(pc,150)/1.5}%"></b></span></td>`;
-  }else h+=`<td class="cmp nd">${NODATA}</td>`;
+    h+=`<td class="cmp ${c}${g}" title="Ejecutado ${fmt(exp)} de ${fmt(rev)} proyectado">${ar}${fp(pc)}<span class="bar"><b style="width:${Math.min(pc,150)/1.5}%"></b></span></td>`;
+  }else h+=`<td class="cmp nd${g}">${NODATA}</td>`;
   return h;
 }
 function renderTable(){
   const wk=showOld?PAST:PAST.slice(2);
   const ncols=1+wk.length*3+3;
-  let th=`<tr><th class="v rs" rowspan="2">Variedad</th>`;
-  wk.forEach(p=>th+=`<th colspan="3">${String(p.y).slice(2)} · S${p.w}${p.w===PAST[2].w?`<button class="ex" id="expand">${showOld?'Ocultar anteriores':'Ver semanas anteriores'}</button>`:''}</th>`);
-  th+=`<th class="rs budh" rowspan="2">Presupuesto<br>${Y} · S${T}</th><th class="rs" rowspan="2">Últimas 13<br>semanas</th><th class="rs revh" rowspan="2">Revisión ${Y} · S${T}<br><span style="font-weight:500;font-size:11px;color:var(--ink-2)">variación vs presupuesto</span></th></tr><tr class="sub">`;
-  wk.forEach(()=>th+='<th>Rev.</th><th>Exp.</th><th>% Cumpl.</th>');
+  const nw=wk.length;
+  let th=`<tr class="band"><th class="v" rowspan="3"><b>Variedad</b><small>Bloque ${blockFilter==='all'?'· todos':esc(blockFilter)}</small></th>`;
+  th+=`<th class="bh" colspan="${nw*3}">Histórico<small>lo proyectado (Rev.) frente a lo exportado (Exp.)</small><button class="ex" id="expand">${showOld?'Ocultar anteriores':'Ver semanas anteriores'}</button></th>`;
+  th+=`<th class="bb" colspan="2">Referencia</th><th class="bc">Tu captura</th></tr><tr class="wk">`;
+  wk.forEach((p,i)=>th+=`<th colspan="3" class="wst${i%2?' w1':''}${p.w===PAST[3].w?' last':''}"><b>S${p.w}</b><small>${p.y}</small></th>`);
+  th+=`<th class="rs budh" rowspan="2">Presupuesto<small style="display:block;font-weight:500;font-size:11px;margin-top:2px">${Y} · S${T}</small></th><th class="rs" rowspan="2">Últimas 13<small style="display:block;font-weight:500;font-size:11px;color:var(--ink-2);margin-top:2px">semanas</small></th><th class="rs revh" rowspan="2">Revisión ${Y} · S${T}<small>variación vs presupuesto</small></th></tr><tr class="sub">`;
+  wk.forEach((p,i)=>{const g=i%2?' w1':'';th+=`<th class="t-rev wst${g}" title="Rev. = lo que se proyectó para esa semana">Rev.</th><th class="t-exp${g}" title="Exp. = tallos exportables realmente ejecutados">Exp.</th><th class="t-cmp${g}" title="% Cumpl. = ejecutado ÷ proyectado">% Cumpl.</th>`});
   $('#thead').innerHTML=th+'</tr>';
   let b='';
   blocks.filter(x=>blockFilter==='all'||String(x)===blockFilter).forEach(bk=>{
     b+=`<tr class="grp"><th class="v">Bloque ${esc(bk)}</th><td colspan="${ncols-1}"><span class="gs" id="gs-${esc(bk)}"></span></td></tr>`;
     rows.filter(r=>r.block===bk).forEach(r=>{
       b+=`<tr class="row" id="tr-${r.id}" data-id="${r.id}"><th class="v" scope="row" title="${esc(r.supervisor?'Supervisor: '+r.supervisor:'')}"><span class="pd" title="Pendiente de captura"></span>${esc(r.variety)}</th>`;
-      wk.forEach(p=>b+=weekCells(r,p,p.w===PAST[3].w));
+      wk.forEach((p,gi)=>b+=weekCells(r,p,p.w===PAST[3].w,gi));
       b+=`<td class="bud num">${r.budget==null?'<span class="na" title="Sin presupuesto cargado">—</span>':fmt(r.budget)}</td><td class="spk" id="sp-${r.id}"></td>`;
       b+=`<td class="rev"><div class="revc"><span class="st" id="st-${r.id}" role="img"></span><span class="chip" id="ch-${r.id}"></span>
         <input class="inp" id="in-${r.id}" inputmode="numeric" autocomplete="off" placeholder="Capturar" aria-label="Revisión S${T} de ${esc(r.variety)}, bloque ${esc(r.block)}" value="${r.val==null?'':fmt(r.val)}"${CAN_REV?'':' disabled title="Tu usuario es de solo lectura"'}>
