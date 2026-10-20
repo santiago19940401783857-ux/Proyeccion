@@ -838,7 +838,7 @@ function renderTable(){
       b+=`<td class="bud num">${r.budget==null?'<span class="na" title="Sin presupuesto cargado">—</span>':fmt(r.budget)}</td><td class="spk" id="sp-${r.id}"></td>`;
       b+=`<td class="rev"><div class="revc"><span class="st" id="st-${r.id}" role="img"></span><span class="chip" id="ch-${r.id}"></span>
         <input class="inp" id="in-${r.id}" inputmode="numeric" autocomplete="off" placeholder="Capturar" aria-label="Revisión S${T} de ${esc(r.variety)}, bloque ${esc(r.block)}" value="${r.val==null?'':fmt(r.val)}"${CAN_REV?'':' disabled title="Tu usuario es de solo lectura"'}>
-        <button class="more" id="mo-${r.id}" aria-expanded="${!!r.open}" aria-label="Detalle de ${esc(r.variety)}" title="Abrir comparativo de revisión">Comparar</button></div></td></tr>`;
+        <button class="more" id="mo-${r.id}" aria-expanded="${!!r.open}" aria-label="Detalle de ${esc(r.variety)}" title="Ayuda y alertas de revisión"><span class="help-icon" aria-hidden="true">?</span><span class="help-label">Detalle</span></button></div></td></tr>`;
       b+=`<tr class="detail" id="dt-${r.id}" ${r.open?'':'hidden'}><td colspan="${ncols}"><div class="dtl"><div class="dm" id="dm-${r.id}"></div><div class="da" id="da-${r.id}"></div>
         <div class="dc"><button class="btn use" data-id="${r.id}" id="us-${r.id}">Usar sugerido</button><label for="cm-${r.id}">Motivo <span id="cr-${r.id}"></span></label><input class="cm" id="cm-${r.id}" data-id="${r.id}" maxlength="140" placeholder="Ej. Ciclo adelantado por pinch" value="${esc(r.comment)}"></div></div></td></tr>`;
     });
@@ -861,7 +861,7 @@ function updateRow(r){
     ch.title=`vs presupuesto ${fmt(r.budget)}: ${devTxt(d)}\nvs promedio 4 sem (${fmt(s.avg4)}): ${dv(s.avg4)}\nvs última semana (${fmt(s.last)}): ${dv(s.last)}\nRango reciente: ${fmt(s.min)} – ${fmt(s.max)}`}
   $('#sp-'+r.id).innerHTML=sparkSvg(r);
   const al=alerts(r),mo=$('#mo-'+r.id);
-  mo.classList.toggle('warn',al.length>0);mo.innerHTML=al.length?'<span class="more-alert">!</span> Comparar':'Comparar';
+  mo.classList.toggle('warn',al.length>0);mo.innerHTML=al.length?'<span class="help-icon alert-icon" aria-hidden="true">!</span><span class="help-label">Alertas</span>':'<span class="help-icon" aria-hidden="true">?</span><span class="help-label">Ayuda</span>'; 
   const dv=x=>x&&r.val!=null?`<b>${devTxt((r.val-x)/x)}</b>`:'<b>—</b>';
   const ac=accuracy(r);
   $('#dm-'+r.id).innerHTML=
@@ -1407,3 +1407,45 @@ $('#tab-cap').hidden=true;
 })();
 </script>
 </body></html>
+
+
+/* Pulido visual: curvas coherentes con el lenguaje de la aplicación */
+.panel,.kpi,.lgcard{border-radius:20px}
+.scroller{border-radius:0 0 20px 20px}
+table{border-spacing:0 1px;background:#F3F6F3}
+thead th{border-bottom-color:#E3EAE5}
+tbody tr.row td,tbody tr.row th{transition:background .16s ease}
+tbody tr.row td:first-of-type{border-radius:10px 0 0 10px}
+tbody tr.row td:last-child{border-radius:0 10px 10px 0}
+tbody tr.row td.blockcell{width:48px;min-width:48px;max-width:48px;padding:0 4px;border-right:0;background:#F5F8F5;border-radius:10px 0 0 10px!important;color:#526B5E;font-size:10.5px}
+thead th.blockh{width:48px;min-width:48px;max-width:48px;border-radius:12px 0 0 0}
+.v{left:48px;width:172px;min-width:172px;max-width:172px;border-radius:0 10px 10px 0!important}
+thead th.v{left:48px}
+tbody tr.row th.v{left:48px}
+tbody tr.row.sel td.blockcell{background:#F4F7E9}
+tbody tr.row:hover td.blockcell{background:#EDF4EF}
+tbody tr.grp th,tr.grp td{border-bottom:0}
+tr.grp th.v{border-radius:12px 0 0 12px;background:#EAF1EC!important}
+tr.grp td:last-child{border-radius:0 12px 12px 0}
+td.rev{width:226px;min-width:226px;padding:0 7px;border-left:2px solid #D8A1AD;border-radius:0 12px 12px 0}
+thead th.revh{width:226px;min-width:226px;border-left:2px solid #D8A1AD;border-radius:12px 12px 0 0}
+.revc{gap:5px}
+.st{width:18px;height:18px}
+.chip{max-width:68px;padding:4px 5px;border-radius:99px;font-size:10px}
+.inp{width:78px;min-width:64px;height:34px;border-radius:99px}
+.more{width:34px;min-width:34px;height:34px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;gap:0;background:#fff;color:#426655;border:1px solid #D5E1D9;box-shadow:0 2px 5px rgba(29,62,47,.05)}
+.more .help-icon{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800;line-height:1;background:#EAF2EC;color:#315C49}
+.more .help-label{display:none}
+.more.warn{background:#FFF8E8;border-color:#E8D49B;color:#785B18}
+.more .alert-icon{background:#F4DFA2;color:#72520B}
+.more[aria-expanded="true"]{background:#21483D;border-color:#21483D}
+.more[aria-expanded="true"] .help-icon{background:rgba(255,255,255,.15);color:#fff}
+.more:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(29,62,47,.12)}
+.dtl{border-radius:16px;margin:6px 8px 10px;box-shadow:0 4px 16px rgba(25,57,42,.05)}
+@media(max-width:900px){
+ .v{left:44px;width:150px;min-width:150px;max-width:150px}
+ thead th.v,tbody tr.row th.v{left:44px}
+ thead th.blockh,tbody tr.row td.blockcell{width:44px;min-width:44px;max-width:44px}
+ td.rev,thead th.revh{width:218px;min-width:218px}
+ .inp{width:72px;min-width:60px}
+}
