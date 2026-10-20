@@ -98,7 +98,15 @@ select,.txt{border:1px solid var(--line);background:var(--surface);border-radius
 .ph small{color:var(--ink-2)}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
-#chart{padding:0 8px 8px;height:178px}
+#chart{padding:0 12px 10px;height:230px;overflow:hidden}
+#chart svg{width:100%;height:100%;overflow:visible}
+#chart .wk-label{font-size:10px;font-weight:600;fill:var(--ink-2)}
+.block-tag{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 7px;margin-right:8px;border-radius:7px;background:var(--grp);border:1px solid var(--line);color:var(--ink-2);font-size:11px;font-weight:700}
+tr.row th.v{width:190px;min-width:190px;max-width:190px}
+tr.row td.blockcell{min-width:74px;text-align:center;font-size:12px;font-weight:700;color:var(--ink-2);background:var(--surface-2);border-right:1px solid var(--line)}
+thead th.blockh{min-width:74px;background:var(--head)}
+tr.grp th{font-weight:700}
+tr.grp .gs{left:0;position:relative;display:flex;flex-wrap:wrap;gap:18px}
 #chart svg{display:block}
 .gl{stroke:var(--line);stroke-width:1}
 .tx{fill:var(--ink-2);font-size:10.5px;font-family:var(--font)}
@@ -690,20 +698,19 @@ function weekCells(r,p,isLast,gi){
 }
 function renderTable(){
   const wk=showOld?PAST:PAST.slice(2);
-  const ncols=1+wk.length*3+3;
+  const ncols=2+wk.length*3+3;
   const nw=wk.length;
-  let th=`<tr class="band"><th class="v" rowspan="3"><b>Variedad</b><small>Bloque ${blockFilter==='all'?'· todos':esc(blockFilter)}</small></th>`;
+  let th=`<tr class="band"><th class="v" rowspan="3"><b>Variedad</b></th><th class="blockh" rowspan="3">Bloque</th>`;
   th+=`<th class="bh" colspan="${nw*3}">Histórico<small>lo proyectado (Rev.) frente a lo exportado (Exp.)</small><button class="ex" id="expand">${showOld?'Ocultar anteriores':'Ver semanas anteriores'}</button></th>`;
   th+=`<th class="bb" colspan="2">Referencia</th><th class="bc">Tu captura</th></tr><tr class="wk">`;
   wk.forEach((p,i)=>th+=`<th colspan="3" class="wst${i%2?' w1':''}${p.w===PAST[3].w?' last':''}"><b>S${p.w}</b><small>${p.y}</small></th>`);
   th+=`<th class="rs budh" rowspan="2">Presupuesto<small style="display:block;font-weight:500;font-size:11px;margin-top:2px">${Y} · S${T}</small></th><th class="rs" rowspan="2">Últimas 13<small style="display:block;font-weight:500;font-size:11px;color:var(--ink-2);margin-top:2px">semanas</small></th><th class="rs revh" rowspan="2">Revisión ${Y} · S${T}<small>variación vs presupuesto</small></th></tr><tr class="sub">`;
   wk.forEach((p,i)=>{const g=i%2?' w1':'';th+=`<th class="t-rev wst${g}" title="Rev. = lo que se proyectó para esa semana">Rev.</th><th class="t-exp${g}" title="Exp. = tallos exportables realmente ejecutados">Exp.</th><th class="t-cmp${g}" title="% Cumpl. = ejecutado ÷ proyectado">% Cumpl.</th>`});
   $('#thead').innerHTML=th+'</tr>';
-  let b='';
+  let b=`<tr class="grp subarea-summary"><th class="v">Resumen subárea</th><td colspan="${ncols-1}"><span class="gs" id="gs-subarea"></span></td></tr>`;
   blocks.filter(x=>blockFilter==='all'||String(x)===blockFilter).forEach(bk=>{
-    b+=`<tr class="grp"><th class="v">Bloque ${esc(bk)}</th><td colspan="${ncols-1}"><span class="gs" id="gs-${esc(bk)}"></span></td></tr>`;
     rows.filter(r=>r.block===bk).forEach(r=>{
-      b+=`<tr class="row" id="tr-${r.id}" data-id="${r.id}"><th class="v" scope="row" title="${esc(r.supervisor?'Supervisor: '+r.supervisor:'')}"><span class="pd" title="Pendiente de captura"></span>${esc(r.variety)}</th>`;
+      b+=`<tr class="row" id="tr-${r.id}" data-id="${r.id}"><th class="v" scope="row" title="${esc(r.supervisor?'Supervisor: '+r.supervisor:'')}"><span class="pd" title="Pendiente de captura"></span>${esc(r.variety)}</th><td class="blockcell">${esc(r.block)}</td>`;
       wk.forEach((p,gi)=>b+=weekCells(r,p,p.w===PAST[3].w,gi));
       b+=`<td class="bud num">${r.budget==null?'<span class="na" title="Sin presupuesto cargado">—</span>':fmt(r.budget)}</td><td class="spk" id="sp-${r.id}"></td>`;
       b+=`<td class="rev"><div class="revc"><span class="st" id="st-${r.id}" role="img"></span><span class="chip" id="ch-${r.id}"></span>
@@ -714,7 +721,7 @@ function renderTable(){
     });
   });
   $('#thead').nextElementSibling.innerHTML=b;
-  rows.forEach(updateRow);blocks.forEach(updateGroup);selectRow(sel);sizeDetail();
+  rows.forEach(updateRow);blocks.forEach(updateGroup);updateSubareaGroup();selectRow(sel);sizeDetail();
 }
 const STT={saved:'Guardado en el servidor',dirty:'Cambio sin guardar',saving:'Guardando…',empty:'Pendiente de captura'};
 function updateRow(r){
@@ -752,6 +759,12 @@ function updateGroup(bk){
   const p=cap.filter(r=>r.budget!=null),v=sum(p.map(r=>r.val)),b=sum(p.map(r=>r.budget)),d=b>0?(v-b)/b:null;
   el.innerHTML=`<span><b>${cap.length}</b> de ${rs.length} capturadas</span><span>Revisión <b>${fmt(sum(cap.map(r=>r.val)))}</b></span><span>Presupuesto <b>${fmt(b)}</b></span>`+(d!=null?`<span class="gchip ${sevCls(d)}">${devTxt(d)} vs presupuesto</span>`:'');
 }
+function updateSubareaGroup(){
+  const el=$('#gs-subarea');if(!el)return;
+  const rs=rows.filter(r=>blockFilter==='all'||String(r.block)===blockFilter),cap=rs.filter(r=>r.val!=null),p=cap.filter(r=>r.budget!=null);
+  const v=sum(cap.map(r=>r.val)),b=sum(p.map(r=>r.budget)),d=b>0?(sum(p.map(r=>r.val))-b)/b:null;
+  el.innerHTML=`<span><b>${cap.length}</b> de ${rs.length} capturadas</span><span>Revisión <b>${fmt(v)}</b></span><span>Presupuesto <b>${fmt(b)}</b></span>`+(d!=null?`<span class="gchip ${sevCls(d)}">${devTxt(d)} vs presupuesto</span>`:'');
+}
 const cmp=(cap,get)=>{const p=cap.filter(r=>get(r)!=null),v=sum(p.map(r=>r.val)),ref=sum(p.map(get));return{n:p.length,v,ref,dev:ref>0?(v-ref)/ref:null}};
 const pillDev=d=>d==null?'':`<span class="gchip ${sevCls(d)}">${devTxt(d)}</span>`;
 function updateSummary(){
@@ -786,7 +799,7 @@ function updateSummary(){
    `<div><div class="k">Presupuesto S${T}</div><div class="big">${fmt(cb.ref)}</div><div class="sm">Revisión vs presupuesto: ${pillDev(cb.dev)||'—'} · ${cb.n} filas</div></div>`+
    `<div><div class="k">Exportable de referencia${RW?' (S'+RW.w+')':''}</div><div class="big">${fmt(ce.ref)}</div><div class="sm">Revisión vs exportable: ${pillDev(ce.dev)||'—'} · ${ce.n} filas</div></div>`;
 }
-function updateAll(r){updateRow(r);updateGroup(r.block);updateSummary();if(r.id===sel)drawChart()}
+function updateAll(r){updateRow(r);updateGroup(r.block);updateSubareaGroup();updateSummary();if(r.id===sel)drawChart()}
 function setVal(r,v){
   if(!CAN_REV)return;
   r.val=v;r.touched=true;r.state=null;r.err=null;
@@ -801,15 +814,15 @@ function drawChart(){
   const r=byId[sel];if(!r){box.innerHTML='';return}
   $('#ctitle').textContent=`Tendencia del ejecutado · Bloque ${r.block} · ${r.variety}`;
   $('#csub').textContent=r.st.n?`Promedio 4 semanas: ${fmt(r.st.avg4)} · Presupuesto S${T}: ${fmt(r.budget)} · Proyección: ${fmt(r.val)}`:'Sin historial ejecutado para esta variedad. Cárgalo en Semanas pasadas.';
-  const W=Math.max(300,box.clientWidth-16),H=164,ml=46,mr=84,mt=14,mb=22;
+  const W=Math.max(300,box.clientWidth-24),H=210,ml=54,mr=26,mt=18,mb=34;
   const X=i=>ml+i/13*(W-ml-mr);
   const vals=[...r.hist,r.budget,r.val,...PAST.map(p=>r.w[p.w][0])].filter(n=>n!=null);
   const mx=niceMax(Math.max(1,...vals)*1.02),Y2=v=>mt+(1-v/mx)*(H-mt-mb);
   let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tendencia semanal de ${esc(r.variety)}">`;
   [0,.5,1].forEach(f=>{const v=mx*f;s+=`<line class="gl" x1="${ml}" x2="${W-mr}" y1="${Y2(v)}" y2="${Y2(v)}"/><text class="tx" x="${ml-6}" y="${Y2(v)+3.5}" text-anchor="end">${fmt(v)}</text>`});
-  [0,3,6,9,12,13].forEach(i=>{const wk=shiftWeek(Y,T,i-13).w;s+=`<text class="tx" x="${X(i)}" y="${H-6}" text-anchor="middle">S${wk}</text>`});
+  for(let i=0;i<=13;i++){const z=shiftWeek(Y,T,i-13),label=`S${z.w}`;s+=`<line class="gl" x1="${X(i)}" x2="${X(i)}" y1="${mt}" y2="${H-mb}" opacity=".22"/><text class="wk-label" x="${X(i)}" y="${H-9}" text-anchor="middle">${label}</text>`}
   if(r.st.avg4!=null)s+=`<line class="ln-avg" x1="${ml}" x2="${W-mr}" y1="${Y2(r.st.avg4)}" y2="${Y2(r.st.avg4)}"/>`;
-  s+=`<line class="ln-proj" x1="${X(13)}" x2="${X(13)}" y1="${mt}" y2="${H-mb}"/>`;
+  s+=`<line class="ln-proj" x1="${X(13)}" x2="${X(13)}" y1="${mt}" y2="${H-mb}"/><text class="tx-b" x="${X(13)-4}" y="${mt-5}" text-anchor="end">S${T} · objetivo</text>`;
   let cur=[],segs=[];r.hist.forEach((v,i)=>{if(v==null){if(cur.length)segs.push(cur);cur=[]}else cur.push([X(i),Y2(v)])});if(cur.length)segs.push(cur);
   segs.forEach(sg=>s+=`<polyline class="ln-ok" points="${sg.map(p=>p.join(',')).join(' ')}"/>`);
   r.hist.forEach((v,i)=>{if(v!=null)s+=`<circle class="dt-ok" cx="${X(i)}" cy="${Y2(v)}" r="2.6"/>`});
