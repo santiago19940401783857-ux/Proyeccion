@@ -394,6 +394,35 @@ tr.grp .gs{gap:12px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
+
+/* Ajustes de jerarquía y espacio: Bloque antes de Variedad */
+thead th.blockh{position:sticky;left:0;z-index:7;width:72px;min-width:72px;max-width:72px;text-align:center}
+tbody tr.row td.blockcell{position:sticky;left:0;z-index:2;width:72px;min-width:72px;max-width:72px;padding:0 6px}
+.v{left:72px;width:178px;min-width:178px;max-width:178px;z-index:3}
+thead th.v{left:72px;z-index:6}
+tbody tr.row th.v{left:72px}
+tbody tr.row.sel td.blockcell{background:#F4F7E9}
+td.rev{min-width:0;width:258px;padding:0 7px}
+.revc{gap:6px;height:46px;justify-content:space-between}
+.st{width:18px;height:18px}
+.chip{min-width:0;max-width:76px;padding:4px 6px;white-space:nowrap;font-size:10.5px}
+.inp{width:84px;min-width:70px;height:33px;padding:0 9px;font-size:13px}
+.more{width:auto;min-width:66px;height:31px;padding:0 9px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.01em;white-space:nowrap;color:#315C49;background:#F7FAF8;border-color:#C9D9CF}
+.more:hover{background:#EAF2EC;border-color:#91B19C;transform:translateY(-1px)}
+.more[aria-expanded="true"]{background:#21483D;color:#fff;border-color:#21483D}
+.more.warn{background:#FFF5DF;color:#86651A;border-color:#E7CD8D}
+.more-alert{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;font-size:9px;background:#E6C56C;color:#573F0C}
+thead th.revh{min-width:0;width:258px;padding-inline:8px}
+tr.grp th[colspan="2"]{left:0;z-index:4}
+@media(max-width:900px){
+ .v{left:64px;width:155px;min-width:155px;max-width:155px}
+ thead th.v,tbody tr.row th.v{left:64px}
+ thead th.blockh,tbody tr.row td.blockcell{width:64px;min-width:64px;max-width:64px}
+ td.rev{width:246px;min-width:246px}
+ .inp{width:76px;min-width:64px}
+ .more{min-width:62px;padding:0 7px}
+}
+
 </style>
 </head><body>
 <div class="band"><div class="band-in">
@@ -794,22 +823,22 @@ function renderTable(){
   const wk=showOld?PAST:PAST.slice(2);
   const ncols=2+wk.length*3+3;
   const nw=wk.length;
-  let th=`<tr class="band"><th class="v" rowspan="3"><b>Variedad</b></th><th class="blockh" rowspan="3">Bloque</th>`;
+  let th=`<tr class="band"><th class="blockh" rowspan="3">Bloque</th><th class="v" rowspan="3"><b>Variedad</b></th>`;
   th+=`<th class="bh" colspan="${nw*3}">Histórico<small>lo proyectado (Rev.) frente a lo exportado (Exp.)</small><button class="ex" id="expand">${showOld?'Ocultar anteriores':'Ver semanas anteriores'}</button></th>`;
   th+=`<th class="bb" colspan="2">Referencia</th><th class="bc">Tu captura</th></tr><tr class="wk">`;
   wk.forEach((p,i)=>th+=`<th colspan="3" class="wst${i%2?' w1':''}${p.w===PAST[3].w?' last':''}"><b>S${p.w}</b><small>${p.y}</small></th>`);
   th+=`<th class="rs budh" rowspan="2">Presupuesto<small style="display:block;font-weight:500;font-size:11px;margin-top:2px">${Y} · S${T}</small></th><th class="rs" rowspan="2">Últimas 13<small style="display:block;font-weight:500;font-size:11px;color:var(--ink-2);margin-top:2px">semanas</small></th><th class="rs revh" rowspan="2">Revisión ${Y} · S${T}<small>variación vs presupuesto</small></th></tr><tr class="sub">`;
   wk.forEach((p,i)=>{const g=i%2?' w1':'';th+=`<th class="t-rev wst${g}" title="Rev. = lo que se proyectó para esa semana">Rev.</th><th class="t-exp${g}" title="Exp. = tallos exportables realmente ejecutados">Exp.</th><th class="t-cmp${g}" title="% Cumpl. = ejecutado ÷ proyectado">% Cumpl.</th>`});
   $('#thead').innerHTML=th+'</tr>';
-  let b=`<tr class="grp subarea-summary"><th class="v">Resumen subárea</th><td colspan="${ncols-1}"><span class="gs" id="gs-subarea"></span></td></tr>`;
+  let b=`<tr class="grp subarea-summary"><th class="v" colspan="2">Resumen subárea</th><td colspan="${ncols-2}"><span class="gs" id="gs-subarea"></span></td></tr>`;
   blocks.filter(x=>blockFilter==='all'||String(x)===blockFilter).forEach(bk=>{
     rows.filter(r=>r.block===bk).forEach(r=>{
-      b+=`<tr class="row" id="tr-${r.id}" data-id="${r.id}"><th class="v" scope="row" title="${esc(r.supervisor?'Supervisor: '+r.supervisor:'')}"><span class="pd" title="Pendiente de captura"></span>${esc(r.variety)}</th><td class="blockcell">${esc(r.block)}</td>`;
+      b+=`<tr class="row" id="tr-${r.id}" data-id="${r.id}"><td class="blockcell">${esc(r.block)}</td><th class="v" scope="row" title="${esc(r.supervisor?'Supervisor: '+r.supervisor:'')}"><span class="pd" title="Pendiente de captura"></span>${esc(r.variety)}</th>`;
       wk.forEach((p,gi)=>b+=weekCells(r,p,p.w===PAST[3].w,gi));
       b+=`<td class="bud num">${r.budget==null?'<span class="na" title="Sin presupuesto cargado">—</span>':fmt(r.budget)}</td><td class="spk" id="sp-${r.id}"></td>`;
       b+=`<td class="rev"><div class="revc"><span class="st" id="st-${r.id}" role="img"></span><span class="chip" id="ch-${r.id}"></span>
         <input class="inp" id="in-${r.id}" inputmode="numeric" autocomplete="off" placeholder="Capturar" aria-label="Revisión S${T} de ${esc(r.variety)}, bloque ${esc(r.block)}" value="${r.val==null?'':fmt(r.val)}"${CAN_REV?'':' disabled title="Tu usuario es de solo lectura"'}>
-        <button class="more" id="mo-${r.id}" aria-expanded="${!!r.open}" aria-label="Detalle de ${esc(r.variety)}" title="Ver detalle y motivo">⌄</button></div></td></tr>`;
+        <button class="more" id="mo-${r.id}" aria-expanded="${!!r.open}" aria-label="Detalle de ${esc(r.variety)}" title="Abrir comparativo de revisión">Comparar</button></div></td></tr>`;
       b+=`<tr class="detail" id="dt-${r.id}" ${r.open?'':'hidden'}><td colspan="${ncols}"><div class="dtl"><div class="dm" id="dm-${r.id}"></div><div class="da" id="da-${r.id}"></div>
         <div class="dc"><button class="btn use" data-id="${r.id}" id="us-${r.id}">Usar sugerido</button><label for="cm-${r.id}">Motivo <span id="cr-${r.id}"></span></label><input class="cm" id="cm-${r.id}" data-id="${r.id}" maxlength="140" placeholder="Ej. Ciclo adelantado por pinch" value="${esc(r.comment)}"></div></div></td></tr>`;
     });
@@ -832,7 +861,7 @@ function updateRow(r){
     ch.title=`vs presupuesto ${fmt(r.budget)}: ${devTxt(d)}\nvs promedio 4 sem (${fmt(s.avg4)}): ${dv(s.avg4)}\nvs última semana (${fmt(s.last)}): ${dv(s.last)}\nRango reciente: ${fmt(s.min)} – ${fmt(s.max)}`}
   $('#sp-'+r.id).innerHTML=sparkSvg(r);
   const al=alerts(r),mo=$('#mo-'+r.id);
-  mo.classList.toggle('warn',al.length>0);mo.textContent=al.length?'⚠':'⌄';
+  mo.classList.toggle('warn',al.length>0);mo.innerHTML=al.length?'<span class="more-alert">!</span> Comparar':'Comparar';
   const dv=x=>x&&r.val!=null?`<b>${devTxt((r.val-x)/x)}</b>`:'<b>—</b>';
   const ac=accuracy(r);
   $('#dm-'+r.id).innerHTML=
